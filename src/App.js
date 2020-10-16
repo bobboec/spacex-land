@@ -9,8 +9,6 @@ import FetchData from './service/FetchData'
 import './style.css';
 
 
-
-
 class App extends React.Component {
   
   fetchData = new FetchData();
@@ -19,10 +17,12 @@ class App extends React.Component {
     rocket: 'Falcon 1',
     rocketFeatures: null,
     rockets: [],
+    company: null,
   };
   
   componentDidMount() {
     this.updateRocket();
+    this.updateCompany();
   }
 
   updateRocket() {
@@ -43,14 +43,19 @@ class App extends React.Component {
     }, this.updateRocket());
   }
 
+  updateCompany = () => {
+    this.fetchData.getCompany()
+      .then(data => this.setState({company: data}));  
+  }
+
   render () {
-    console.log(this.state);
+    
     return (
       <>
         <Header rockets={this.state.rockets} changeRocket={this.changeRocket}/>
         <Main rocket={this.state.rocket}/>
-        <Features />
-        <Footer />
+        {this.state.rocketFeatures && <Features {...this.state.rocketFeatures}/>} {/* ... спред оператор */}
+        {this.state.company && <Footer {...this.state.company.links}  />}
         
       </>
     );
